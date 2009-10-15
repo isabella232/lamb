@@ -1,0 +1,9 @@
+digraph "Lamb state machine" {
+  Start -> Start [label="Exception"]
+  Start -> Check
+
+  Check -> Check [label="Exception"]
+  Check -> Finish
+
+  Finish -> Finish [label="Exception"]
+}
