@@ -1,8 +1,8 @@
 class Instance
   attr_reader :starts, :checks, :finishes, :exceptions
-  def initialize
+  def initialize s=0, c=0, f=0
     @starts = @checks = @finishes = 0
-    @exceptions = {:start => 0, :check => 0, :finish => 0}
+    @exceptions = {:start => s, :check => c, :finish => f}
   end
 
   def start
