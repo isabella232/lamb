@@ -1,33 +1,14 @@
-Given /^everything is enabled$/ do
-  Given "the broker is enabled"
-  Given "all workers are enabled"
-end
-
-Given /^all workers are enabled$/ do
-  Given "the start worker is enabled"
-  Given "the check worker is enabled"
-  Given "the finish worker is enabled"
-end
-
-Given /^the broker is enabled$/ do
+Given /^the broker is started$/ do
   # noop
 end
 
-Given /^the start worker is enabled$/ do
-  Lamb.enable_start
+Given /^the workers are started$/ do
+  Lamb.process
 end
 
-Given /^the check worker is enabled$/ do
-  Lamb.enable_check
-end
-
-Given /^the finish worker is enabled$/ do
-  Lamb.enable_finish
-end
-
-When /^(\d+) jobs? (?:is|are) added$/ do |jobs|
+When /^(\d+) jobs? (?:is|are) scheduled$/ do |jobs|
   jobs.times do
-    Lamb.add :provisioner, @instances.push(Instance.new).last
+    Lamb.schedule :provisioner, @instances.push(Instance.new).last
   end
 end
 

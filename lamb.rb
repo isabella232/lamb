@@ -18,11 +18,11 @@ module Lamb
     @@workers[name] = worker
   end
 
-  def self.add name, job
+  def self.schedule name, job
     @@jobs[name][:start].push job
   end
 
-  def self.enable_start
+  def self.process
     @@jobs.each do |name, jobs|
       Thread.new do
         loop do
@@ -35,11 +35,7 @@ module Lamb
           end
         end
       end
-    end
-  end
 
-  def self.enable_check
-    @@jobs.each do |name, jobs|
       Thread.new do
         loop do
           job = jobs[:check].pop
@@ -51,11 +47,7 @@ module Lamb
           end
         end
       end
-    end
-  end
 
-  def self.enable_finish
-    @@jobs.each do |name, jobs|
       Thread.new do
         loop do
           job = jobs[:finish].pop
