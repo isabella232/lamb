@@ -19,17 +19,29 @@ module Lamb
   def self.process
     @@jobs.each do |name, jobs|
       while job = jobs[:start].pop
-        next_job = @@workers[name].work :start, job
-        jobs[:check].push next_job
+        begin
+          next_job = @@workers[name].work :start, job
+          jobs[:check].push next_job
+        rescue Exception
+          jobs[:start].push job
+        end
       end
 
       while job = jobs[:check].pop
-        next_job = @@workers[name].work :check, job
-        jobs[:finish].push next_job
+        begin
+          next_job = @@workers[name].work :check, job
+          jobs[:finish].push next_job
+        rescue Exception
+          jobs[:check].push job
+        end
       end
 
       while job = jobs[:finish].pop
-        @@workers[name].work :finish, job
+        begin
+          @@workers[name].work :finish, job
+        rescue Exception
+          jobs[:finish].push job
+        end
       end
     end
   end
