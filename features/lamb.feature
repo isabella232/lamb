@@ -3,8 +3,8 @@ Feature: adding & processing jobs
   I want to add jobs
   So that they can complete later
 
-Scenario: adding jobs
-  Given a new queue "MyQueue"
+Scenario: jobs without exceptions
+  Given registering "provisioner"
   And a new job "Job1"
   And a new job "Job2"
 
