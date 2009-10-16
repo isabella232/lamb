@@ -7,7 +7,7 @@ class Store
     @@redis.push_tail "store", Marshal.dump(val)
   end
 
-  def self.value
+  def self.values
     @@redis.list_range("store", 0, -1).map do |val|
       Marshal.load val
     end

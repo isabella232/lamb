@@ -29,13 +29,13 @@ Then /^start\/check\/finish has been called (\d+)\/(\d+)\/(\d+) times?$/ do |s, 
 end
 
 Then /^start has been called (\d+) times?$/ do |times|
-  Store.value.inject(0) {|sum, i| sum + i.starts }.should == times
+  Store.values.inject(0) {|sum, i| sum + i.starts }.should == times
 end
 
 Then /^check has been called (\d+) times?$/ do |times|
-  Store.value.inject(0) {|sum, i| sum + i.checks }.should == times
+  Store.values.inject(0) {|sum, i| sum + i.checks }.should == times
 end
 
 Then /^finish has been called (\d+) times?$/ do |times|
-  Store.value.inject(0) {|sum, i| sum + i.finishes }.should == times
+  Store.values.inject(0) {|sum, i| sum + i.finishes }.should == times
 end
