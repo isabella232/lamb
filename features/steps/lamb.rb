@@ -4,13 +4,13 @@ end
 
 When /^(\d+) jobs? (?:is|are) scheduled$/ do |j|
   j.times do
-    Lamb.schedule :provisioner, @instances.push(Instance.new).last
+    Lamb.schedule :provisioner, Instance.new
   end
 end
 
 When /^(\d+) jobs? (?:is|are) scheduled with (\d+)\/(\d+)\/(\d+) start\/check\/finish exceptions$/ do |j, s, c, f|
   j.times do
-    Lamb.schedule :provisioner, @instances.push(Instance.new s, c, f).last
+    Lamb.schedule :provisioner, Instance.new(s, c, f)
   end
 end
 
@@ -29,13 +29,13 @@ Then /^start\/check\/finish has been called (\d+)\/(\d+)\/(\d+) times?$/ do |s, 
 end
 
 Then /^start has been called (\d+) times?$/ do |times|
-  @instances.inject(0) {|sum, i| sum + i.starts }.should == times
+  Store.value.inject(0) {|sum, i| sum + i.starts }.should == times
 end
 
 Then /^check has been called (\d+) times?$/ do |times|
-  @instances.inject(0) {|sum, i| sum + i.checks }.should == times
+  Store.value.inject(0) {|sum, i| sum + i.checks }.should == times
 end
 
 Then /^finish has been called (\d+) times?$/ do |times|
-  @instances.inject(0) {|sum, i| sum + i.finishes }.should == times
+  Store.value.inject(0) {|sum, i| sum + i.finishes }.should == times
 end
