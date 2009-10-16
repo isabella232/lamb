@@ -47,10 +47,6 @@ module Lamb
   end
 
   class Worker
-    def initialize
-      @start = @check = @finish = lambda{|arg| }
-    end
-
     def work context, job
       instance_variable_get("@#{context}").call job
     end
