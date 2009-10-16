@@ -2,14 +2,18 @@ Given /^the broker is started$/ do
   # noop
 end
 
-Given /^the workers are started$/ do
-  Lamb.process
-end
-
 When /^(\d+) jobs? (?:is|are) scheduled$/ do |jobs|
   jobs.times do
     Lamb.schedule :provisioner, @instances.push(Instance.new).last
   end
+end
+
+Given /^(\d+) future (.*) exceptions$/ do |exceptions, type|
+  @instances.each{|i| i.exceptions[type.to_sym] = exceptions }
+end
+
+Given /^the workers are started$/ do
+  Lamb.process
 end
 
 When /^I take a nap$/ do
@@ -17,7 +21,7 @@ When /^I take a nap$/ do
 end
 
 Then /^start has been called (\d+) times?$/ do |times|
-  @instances.inject(0) {|sum, i| sum + i.provisions }.should == times
+  @instances.inject(0) {|sum, i| sum + i.starts }.should == times
 end
 
 Then /^check has been called (\d+) times?$/ do |times|

@@ -1,24 +1,21 @@
 class Instance
-  attr_reader :results
-  attr_reader :provisions, :checks, :finishes
-  def initialize exceptions={}
-    @provisions = @checks = @finishes = 0
-    @exceptions = {:provision => 0, :check => 0, :finish => 0}
-    exceptions.each{|k,v| @exceptions[k] = v }
-    @results = []
+  attr_reader :starts, :checks, :finishes, :exceptions
+  def initialize
+    @starts = @checks = @finishes = 0
+    @exceptions = {:start => 0, :check => 0, :finish => 0}
   end
 
-  def provision
-    @provisions += 1
-    until @exceptions[:provision] == 0
-      @exceptions[:provision] -= 1
+  def start
+    @starts += 1
+    unless @exceptions[:start] == 0
+      @exceptions[:start] -= 1
       raise Exception.new
     end
   end
 
-  def status
+  def check
     @checks += 1
-    until @exceptions[:check] == 0
+    unless @exceptions[:check] == 0
       @exceptions[:check] -= 1
       raise Exception.new
     end
@@ -26,7 +23,7 @@ class Instance
 
   def finish
     @finishes += 1
-    until @exceptions[:finish] == 0
+    unless @exceptions[:finish] == 0
       @exceptions[:finish] -= 1
       raise Exception.new
     end

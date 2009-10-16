@@ -3,8 +3,8 @@ require "#{File.dirname __FILE__}/fixtures"
 
 Before do
   Lamb.register :provisioner do |job|
-    job.start {|instance| instance.provision ; instance }
-    job.check {|instance| instance.status ; instance }
+    job.start {|instance| instance.start ; instance }
+    job.check {|instance| instance.check ; instance }
     job.finish {|instance| instance.finish }
   end
   @instances = []

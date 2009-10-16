@@ -1,4 +1,5 @@
 require "thread"
+Thread.abort_on_exception = true
 
 module Lamb
   def self.reset
