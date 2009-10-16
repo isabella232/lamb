@@ -18,7 +18,7 @@ class Store
   end
 end
 
-class Instance
+class ExampleWorker
   attr_reader :starts, :checks, :finishes, :exceptions
   def initialize s=0, c=0, f=0
     @starts = @checks = @finishes = 0

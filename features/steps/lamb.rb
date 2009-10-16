@@ -4,13 +4,13 @@ end
 
 When /^(\d+) jobs? (?:is|are) scheduled$/ do |j|
   j.times do
-    Lamb.schedule :provisioner, Instance.new
+    Lamb.schedule :my_work, ExampleWorker.new
   end
 end
 
 When /^(\d+) jobs? (?:is|are) scheduled with (\d+)\/(\d+)\/(\d+) start\/check\/finish exceptions$/ do |j, s, c, f|
   j.times do
-    Lamb.schedule :provisioner, Instance.new(s, c, f)
+    Lamb.schedule :my_work, ExampleWorker.new(s, c, f)
   end
 end
 

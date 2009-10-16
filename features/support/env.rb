@@ -5,12 +5,12 @@ Before do
   Lamb.reset
   Store.reset
 
-  Lamb.register :provisioner do |job|
-    job.start {|instance| instance.start ; instance }
-    job.check {|instance| instance.check ; instance }
-    job.finish do |instance|
-      instance.finish
-      Store.push instance
+  Lamb.register :my_work do |job|
+    job.start {|worker| worker.start ; worker }
+    job.check {|worker| worker.check ; worker }
+    job.finish do |worker|
+      worker.finish
+      Store.push worker
     end
   end
 end
