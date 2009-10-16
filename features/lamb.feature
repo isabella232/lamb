@@ -3,14 +3,18 @@ Feature: adding & processing jobs
   I want to add jobs
   So that they can complete later
 
-Scenario: jobs without exceptions
-  Given registering "provisioner"
-  And a new job "Job1"
-  And a new job "Job2"
+Scenario: the happy path with a single job
+  Given everything is enabled
+  When 1 job is added
+  And I take a nap
+  Then start has been called 1 time
+  And check has been called 1 time
+  And finish has been called 1 time
 
-  When job "Job1" is added to queue "MyQueue"
-  And job "Job2" is added to queue "MyQueue"
-  Then queue "MyQueue" should have 2 jobs
-
-  When queue "MyQueue" is processed
-  Then queue "MyQueue" should have 0 jobs
+Scenario: the happy path with multiple jobs
+  Given everything is enabled
+  When 7 jobs are added
+  And I take a nap
+  Then start has been called 7 times
+  And check has been called 7 times
+  And finish has been called 7 times

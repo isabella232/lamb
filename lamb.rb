@@ -1,3 +1,5 @@
+require "thread"
+
 module Lamb
   def self.reset
     @@workers = {}
@@ -6,7 +8,11 @@ module Lamb
   reset
 
   def self.register name, &block
-    @@jobs[name] = {:start => [], :check => [], :finish => []}
+    @@jobs[name] = {
+      :start => Queue.new,
+      :check => Queue.new,
+      :finish => Queue.new
+    }
     worker = Worker.new
     worker.instance_eval &block
     @@workers[name] = worker
@@ -16,31 +22,48 @@ module Lamb
     @@jobs[name][:start].push job
   end
 
-  def self.process
+  def self.enable_start
     @@jobs.each do |name, jobs|
-      while job = jobs[:start].pop
-        begin
-          next_job = @@workers[name].work :start, job
-          jobs[:check].push next_job
-        rescue Exception
-          jobs[:start].push job
+      Thread.new do
+        loop do
+          job = jobs[:start].pop
+          begin
+            next_job = @@workers[name].work :start, job
+            jobs[:check].push next_job
+          rescue Exception
+            jobs[:start].push job
+          end
         end
       end
+    end
+  end
 
-      while job = jobs[:check].pop
-        begin
-          next_job = @@workers[name].work :check, job
-          jobs[:finish].push next_job
-        rescue Exception
-          jobs[:check].push job
+  def self.enable_check
+    @@jobs.each do |name, jobs|
+      Thread.new do
+        loop do
+          job = jobs[:check].pop
+          begin
+            next_job = @@workers[name].work :check, job
+            jobs[:finish].push next_job
+          rescue Exception
+            jobs[:check].push job
+          end
         end
       end
+    end
+  end
 
-      while job = jobs[:finish].pop
-        begin
-          @@workers[name].work :finish, job
-        rescue Exception
-          jobs[:finish].push job
+  def self.enable_finish
+    @@jobs.each do |name, jobs|
+      Thread.new do
+        loop do
+          job = jobs[:finish].pop
+          begin
+            @@workers[name].work :finish, job
+          rescue Exception
+            jobs[:finish].push job
+          end
         end
       end
     end

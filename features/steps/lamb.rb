@@ -1,36 +1,48 @@
-Before do
-  @queues = {}
-  @jobs = {}
+Given /^everything is enabled$/ do
+  Given "the broker is enabled"
+  Given "all workers are enabled"
 end
 
-Transform /^(\d+)$/ do |num|
-  num.to_i
+Given /^all workers are enabled$/ do
+  Given "the start worker is enabled"
+  Given "the check worker is enabled"
+  Given "the finish worker is enabled"
 end
 
-Transform /^queue "(.*)"$/ do |name|
-  @queues[name]
+Given /^the broker is enabled$/ do
+  # noop
 end
 
-Transform /^jobs "(.*)"$/ do |name|
-  @jobs[name]
+Given /^the start worker is enabled$/ do
+  Lamb.enable_start
 end
 
-Given /^a new queue "(.*)"$/ do |name|
-  @queues[name] = Lamb::Queue.new
+Given /^the check worker is enabled$/ do
+  Lamb.enable_check
 end
 
-Given /^a new job "(.*)"$/ do |name|
-  @jobs[name] = Lamb::Job.new
+Given /^the finish worker is enabled$/ do
+  Lamb.enable_finish
 end
 
-When /^(job ".*") is added to (queue ".*")$/ do |job, queue|
-  queue.add job
+When /^(\d+) jobs? (?:is|are) added$/ do |jobs|
+  jobs.times do
+    Lamb.add :provisioner, @instances.push(Instance.new).last
+  end
 end
 
-When /^(queue ".*") is processed$/ do |queue|
-  queue.process
+When /^I take a nap$/ do
+  sleep 0.1
 end
 
-Then /^(queue ".*") should have (\d+) jobs$/ do |queue, size|
-  queue.size.should == size
+Then /^start has been called (\d+) times?$/ do |times|
+  @instances.inject(0) {|sum, i| sum + i.provisions }.should == times
+end
+
+Then /^check has been called (\d+) times?$/ do |times|
+  @instances.inject(0) {|sum, i| sum + i.checks }.should == times
+end
+
+Then /^finish has been called (\d+) times?$/ do |times|
+  @instances.inject(0) {|sum, i| sum + i.finishes }.should == times
 end

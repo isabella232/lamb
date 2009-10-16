@@ -49,7 +49,7 @@ describe "Jobs without exceptions" do
   end
 
   it "are started 1 time" do
-    @instance.provisions == 1
+    @instance.provisions.should == 1
   end
 
   it "are checked 1 time" do
